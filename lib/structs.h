@@ -37,7 +37,12 @@ score
 {
 	{length*3+2,3},
 	{length*4+8,5}
-};//各种按钮的位置 
+},
+reset_score
+{
+	{length*3+2,6},
+	{length*4+8,8}
+};
 
 typedef struct scoreboard_info_
 {

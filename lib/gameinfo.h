@@ -1,5 +1,8 @@
 #pragma once
 
+//////////////////////////////////gameinfo.h////////////////////////////////////
+//gameinfo.h:¥Ê»°º∆∑÷∞Â–≈œ¢
+
 #include<fstream>
 #include"structs.h"
 #include"my_custom.h"
@@ -22,3 +25,5 @@ void change_write_info(scoreboard_info & info,bool & iswin)//–ﬁ∏ƒ≤¢–¥»Îº∆∑÷∞Â–≈œ
 	fout<<info.gameplayed<<" "<<info.gamewon;// ‰≥ˆ
 	fout.close();//πÿ±’Œƒº˛
 }
+
+//////////////////////////////////gameinfo.h////////////////////////////////////

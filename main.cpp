@@ -1,4 +1,4 @@
-//扫雷游戏2.0
+//扫雷游戏2.0.1
 //注：此版本需配合scoreboard程序使用
 ////////////////////////////////////////////////////////////////////////////////
 #include "lib.h"
@@ -165,7 +165,7 @@ bool fan(int x, int y) //翻开一个格子
 	//注：注意这个函数调用时的参数顺序，应将行数放在第二个参数，列数放在第一个参数
 }
 
-void pr_ispr()//调试函数，请忽略
+/*void pr_ispr()//调试函数，请忽略
 {
 	gotoxy(0, 20);
 	for (int i = 0; i < height; i++)
@@ -177,7 +177,7 @@ void pr_ispr()//调试函数，请忽略
 		cout << endl;
 	}
 }
-
+*/
 void flag(int y, int x, int &leicnt) //插旗子或拔出旗子
 {
 	if (!ispr[y][x])//没有显示
@@ -206,13 +206,14 @@ void initialize()//开始新的一局游戏时的初始化
 	system("cls");//清屏
 	system("color F0");//设置背景
 	char st[80];//准备设置的字符串
-	sprintf(st, "mode con cols=%d lines=%d", length * 7, height * 2 + 5);//向字符串输出文本
+	sprintf(st, "mode con cols=%d lines=%d", length * 7, height * 2 + 6);//向字符串输出文本
 	system(st);//设置控制台的长和宽
 	SetConsoleMode(window, ENABLE_EXTENDED_FLAGS | ENABLE_WINDOW_INPUT |
 	               ENABLE_MOUSE_INPUT);
 	button_show(times.a, times.b, " ");//输出时间框
 	button_show(minecnt.a, minecnt.b, " ");//输出雷数框
 	button_show(score.a,score.b,"scoreboard");
+	button_show(reset_score.a,reset_score.b,"reset score ");
 	gotoxy(2, 1);
 	cout << "time:";
 	gotoxy(length + 2, 1);
@@ -350,12 +351,26 @@ void mouse(int a,int & leicnt,scoreboard_info & info)//有关鼠标的操作
 					doublekey(get,iswin,info);
 			}
 		}
-		if(mouse_click(score.a,score.b,a,MK_LEFT))
+		else if(mouse_click(score.a,score.b,a,MK_LEFT))//点击了scoreboard按钮
 		{
 			TCHAR szpath[30]=TEXT("scoreboard.exe");
 			STARTUPINFO startinfo={sizeof(STARTUPINFO),NULL,NULL};
 			PROCESS_INFORMATION ppi={0};
-			CreateProcess(NULL,szpath,NULL,NULL,false,CREATE_NEW_CONSOLE,NULL,NULL,&startinfo,&ppi);
+			if(not CreateProcess(NULL,
+					szpath,//命令行
+					NULL,NULL,false,//默认安全和不继承
+					CREATE_NEW_CONSOLE,//使用新控制台
+					NULL,NULL,//无环境块和默认目录
+					&startinfo,//启动信息
+					&ppi)//进程句柄
+					)
+			{
+				error(CANNOT_START_SCOREBOARD);//无法打开scoreboard程序
+			}
+		}
+		else if(mouse_click(reset_score.a,reset_score.b,a,MK_LEFT))//点击了reset score按钮
+		{
+			remove("gameinfo.json");//删除文件
 		}
 	}
 	else
@@ -403,11 +418,11 @@ void compare_version()
 	if(VerifyVersionInfo(&osver,
 			VER_MAJORVERSION bitor VER_MINORVERSION bitor VER_PLATFORMID,
 			dwlConditionMask))
-	{
+	{//满足要求
 		return;
 	}
 	else
-	{
+	{//不满足要求
 		cout<<"此系统不是Windows 10。这个游戏只能在Windows 10上运行。";
 		Sleep(2000);
 		exit(0);
@@ -416,7 +431,7 @@ void compare_version()
 
 int main()//主函数
 {
-	compare_version();
+	compare_version();//比较系统版本
 	window = GetStdHandle(STD_INPUT_HANDLE);//获取窗口句柄
 	SetConsoleTitle("扫雷");//设置窗口标题
 	initialize();//初始化

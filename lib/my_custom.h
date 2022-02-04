@@ -24,6 +24,8 @@ namespace my_using
 	using std::endl;
 	using std::ifstream;
 	using std::ofstream;
+	using std::hex;
+	using std::dec;
 }//使用的名称 
 
 //////////////////////////////////my_custom.h///////////////////////////////////
