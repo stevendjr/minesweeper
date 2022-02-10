@@ -18,14 +18,15 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 //自己定义的头文件
+#include"include/chartype.h"
 #include"include/my_custom.h"//自定义名称
-#include"include/my_error.h"
+#include"include/my_error.h"//自定义错误码
 #include"include/funcs.h"//独立函数
 #include"include/structs.h"//结构变量
 
 #define DLL_IMPORT
-#include"include/mouse.h"
-#include"include/gameinfo.h"
-#include"include/button.h"
+#include"include/mouse.h"//鼠标控制
+#include"include/gameinfo.h"//游戏信息存储
+#include"include/button.h"//按钮
 
 ////////////////////////////////////lib.h///////////////////////////////////////

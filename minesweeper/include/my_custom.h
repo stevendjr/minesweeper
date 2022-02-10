@@ -21,6 +21,7 @@ enum {NONE,RESTART,NEW_GAME};
 namespace my_using
 {
 	using std::cout;
+	using std::wcout;
 	using std::endl;
 	using std::ifstream;
 	using std::ofstream;

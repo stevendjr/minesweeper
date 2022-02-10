@@ -2,7 +2,6 @@
 //注：此版本需配合scoreboard程序使用
 ////////////////////////////////////////////////////////////////////////////////
 #include "main.h"
-
 using namespace my_using;
 
 int mines[height][length];//定义表示地图的二维数组
@@ -18,39 +17,39 @@ void out_gezi()//输出游戏棋盘
 {
 	gotoxy(0, 3);//到达初始位置
 	color(back_white);//设置白色背景色
-	cout << "┏";//输出左上角
+	_tout << "┏";//输出左上角
 	for (int j = 0; j < length - 1; j++)
 	{
-		cout << "━━┳";
+		_tout << "━━┳";
 	}
-	cout << "━━┓" ;
+	_tout << "━━┓" ;
 	for (int i = 0; i < height - 1; i++)
 	{
-		cout << " " << endl << "┃";
+		_tout << " " << endl << "┃";
 		for (int j = 0; j < length - 1; j++)
 		{
-			cout << "  ┃";
+			_tout << "  ┃";
 		}
-		cout << "  ┃ ";
-		cout << endl << "┣";
+		_tout << "  ┃ ";
+		_tout << endl << "┣";
 		for (int j = 0; j < length - 1; j++)
 		{
-			cout << "━━╋";
+			_tout << "━━╋";
 		}
-		cout << "━━┫";
+		_tout << "━━┫";
 	}
-	cout << " " << endl << "┃";
+	_tout << " " << endl << "┃";
 	for (int j = 0; j < length - 1; j++)
 	{
-		cout << "  ┃";
+		_tout << "  ┃";
 	}
-	cout << "  ┃ ";
-	cout << endl << "┗";
+	_tout << "  ┃ ";
+	_tout << endl << "┗";
 	for (int j = 0; j < length - 1; j++)
 	{
-		cout << "━━┻";
+		_tout << "━━┻";
 	}
-	cout << "━━┛ ";
+	_tout << "━━┛ ";
 }
 
 void print(int i, int j) //输出格子里的内容
@@ -83,9 +82,9 @@ void print(int i, int j) //输出格子里的内容
 	gotoxy((i + 1) * 3 - 1, j * 2 + 4);//计算并来到指定位置
 	color(col);//设置颜色
 	if (mines[i][j] == -1)//如果是雷
-		cout << "X";
+		_tout << "X";
 	else//否则
-		cout << mines[i][j];//原样输出
+		_tout << mines[i][j];//原样输出
 }
 
 void spawn(int o, int p) //生成扫雷地图
@@ -181,9 +180,9 @@ bool fan(int x, int y) //翻开一个格子
 	{
 		for (int j = 0; j < length; j++)
 		{
-			cout << ispr[i][j];
+			_tout << ispr[i][j];
 		}
-		cout << endl;
+		_tout << endl;
 	}
 }
 */
@@ -195,13 +194,13 @@ void flag(int y, int x, int &leicnt) //插旗子或拔出旗子
 		color(FOREGROUND_RED | FOREGROUND_INTENSITY | back_white);//设置颜色
 		if (!isfl[y][x])//没有插旗子
 		{
-			cout << "F";
+			_tout << TEXT("F");
 			isfl[y][x] = true;//已经插了
 			--leicnt;//雷数减1
 		}
 		else//已经插了
 		{
-			cout << " ";
+			_tout << " ";
 			isfl[y][x] = false;//拔出旗子
 			++leicnt;//雷数加1
 		}
@@ -215,7 +214,7 @@ void initialize()//开始新的一局游戏时的初始化
 	system("cls");//清屏
 	system("color F0");//设置背景
 	char st[80];//准备设置的字符串
-	sprintf_s(st, "mode con cols=%d lines=%d", length * 7, height * 2 + 6);//向字符串输出文本
+	sprintf_s(st, (size_t)_countof(st), "mode con cols=%d lines=%d", length * 7, height * 2 + 6);//向字符串输出文本
 	system(st);//设置控制台的长和宽
 	SetConsoleMode(window, ENABLE_EXTENDED_FLAGS | ENABLE_WINDOW_INPUT |
 	               ENABLE_MOUSE_INPUT);
@@ -224,11 +223,11 @@ void initialize()//开始新的一局游戏时的初始化
 	button_show(score.a,score.b,"scoreboard");
 	button_show(reset_score.a,reset_score.b,"reset score ");
 	gotoxy(2, 1);
-	cout << "time:";
+	_tout << TEXT("time:");
 	gotoxy(length + 2, 1);
-	cout << ":";
+	_tout << TEXT(":");
 	gotoxy(length + 7, 1);
-	cout << "X:";
+	_tout << TEXT("X:");
 	start = clock();//得到开始时间
 	out_gezi();//输出棋盘
 }
@@ -239,20 +238,20 @@ void out_time()//输出用时信息
 	gotoxy(length, 1);
 	clock_t rtnow = (clock() - start) / CLOCKS_PER_SEC;//计算用时：（现在时间-开始时间）/时间单位
 	if (rtnow / 600 == 0)//如果不满10分钟
-		cout << 0;//补0
-	cout << rtnow / 60;//输出分钟
+		_tout << 0;//补0
+	_tout << rtnow / 60;//输出分钟
 	gotoxy(length + 3, 1);
 	if (rtnow % 60 / 10 == 0)//如果秒数不满10秒
-		cout << 0;//补0
-	cout << rtnow % 60;//输出秒
+		_tout << 0;//补0
+	_tout << rtnow % 60;//输出秒
 }
 
 void out_leicnt(int leicnt)//输出剩余雷数
 {
 	gotoxy(length * 3 - 1, 1);
 	if (leicnt >= 0 and leicnt < 10)//雷数在0~9之间
-		cout << " ";//补空格
-	cout << leicnt;//输出雷数
+		_tout << TEXT(" ");//补空格
+	_tout << leicnt;//输出雷数
 	//注：这段代码无法正确处理leicnt<=-10 or leicnt>=100时的情况
 }
 
@@ -278,14 +277,14 @@ void gameover(scoreboard_info & info,bool & iswin)
 	change_write_info(info,iswin);
 	color(back_white);//设置背景
 	gotoxy(length * 3 + 4, 1);//到达指定位置
-	cout<<"                                ";
+	_tout<<"                                ";
 	gotoxy(length * 3 + 4, 2);//到达指定位置
-	cout<<"                        ";
+	_tout<<"                        ";
 	gotoxy(length * 3 + 4, 1);//到达指定位置
 	if (iswin)//是赢了
-		cout << "你赢了。祝贺您！";
+		_tout << TEXT("你赢了。祝贺您！");
 	else//是输了
-		cout << "不好意思，您输了。再试一次！";
+		_tout << TEXT("不好意思，您输了。再试一次！");
 	button_show(new_game.a, new_game.b, "new_game");//输出new_game按钮
 	button_show(restart.a,restart.b,"restart ");//输出restart按钮
 	button_show(m_exit.a, m_exit.b, "exit");//输出exit按钮
@@ -400,9 +399,9 @@ void mouse(int a,int & leicnt,scoreboard_info & info)//有关鼠标的操作
 				leicnt=num;//初始化雷计数
 				isrestart=true;//更新地图
 				gotoxy(length * 3 + 4, 1);//到达指定位置
-				cout<<"这一局的游戏和上一次相同。小心！";
+				_tout<<TEXT("这一局的游戏和上一次相同。小心！");
 				gotoxy(length * 3 + 4, 2);//到达指定位置
-				cout<<"您第一次单击就可能会输。";
+				_tout<<TEXT("您第一次单击就可能会输。");
 		}
 	}
 }
@@ -432,13 +431,13 @@ void compare_version()
 	}
 	else
 	{//不满足要求
-		cout<<"此系统不是Windows 10。这个游戏只能在Windows 10上运行。";
+		_tout<<TEXT("此系统不是Windows 10。这个游戏只能在Windows 10上运行。");
 		Sleep(2000);
 		exit(0);
 	}
 }
 
-int main()//主函数
+int _tmain()//主函数
 {
 	compare_version();//比较系统版本
 	window = GetStdHandle(STD_INPUT_HANDLE);//获取窗口句柄
