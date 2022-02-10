@@ -1,4 +1,4 @@
-Debug/
-.settings/
-.cproject
-.project
+.vs
+x64
+minesweeper/x64
+minesweeper/minesweeper.vcxproj*

@@ -1,9 +1,18 @@
 //扫雷游戏2.0.1
 //注：此版本需配合scoreboard程序使用
 ////////////////////////////////////////////////////////////////////////////////
-#include "lib.h"
+#include "main.h"
 
 using namespace my_using;
+
+int mines[height][length];//定义表示地图的二维数组
+bool ispr[height][length];//是不是已经打印了
+bool isfl[height][length];//是不是已经插了旗子
+HANDLE window;//窗口句柄
+INPUT_RECORD input[128];//输入事件池
+DWORD input_num;//输入事件数量
+bool isrun;//正在游戏界面
+clock_t start;//一局游戏开始时的计时
 
 void out_gezi()//输出游戏棋盘
 {
@@ -81,7 +90,7 @@ void print(int i, int j) //输出格子里的内容
 
 void spawn(int o, int p) //生成扫雷地图
 {
-	srand(time(0));//设置随机种子
+	srand((unsigned)time(0));//设置随机种子
 	int x, y,lei;
 	int i, j, k, l; //循环变量
 	i=0;
@@ -113,21 +122,21 @@ void spawn(int o, int p) //生成扫雷地图
 
 int menu(int i) //进入菜单时的操作
 {
-	if (mouse_click(new_game.a, new_game.b, i, MK_LEFT))//点击了new_game按钮
+	if (mouse_click(input,new_game.a, new_game.b, i, MK_LEFT))//点击了new_game按钮
 	{
 		unbtnshow(new_game.a, new_game.b);
 		unbtnshow(restart.a,restart.b);
 		unbtnshow(m_exit.a, m_exit.b);//隐藏三个按钮
 		return NEW_GAME;
 	}
-	else if(mouse_click(restart.a, restart.b, i, MK_LEFT))
+	else if(mouse_click(input,restart.a, restart.b, i, MK_LEFT))
 	{
 		unbtnshow(new_game.a, new_game.b);
 		unbtnshow(restart.a,restart.b);
 		unbtnshow(m_exit.a, m_exit.b);//隐藏三个按钮
 		return RESTART;
 	}
-	else if (mouse_click(m_exit.a, m_exit.b, i, MK_LEFT))//点击了exit按钮
+	else if (mouse_click(input,m_exit.a, m_exit.b, i, MK_LEFT))//点击了exit按钮
 	{
 		system("cls");//清屏
 		exit(0);//退出游戏
@@ -206,7 +215,7 @@ void initialize()//开始新的一局游戏时的初始化
 	system("cls");//清屏
 	system("color F0");//设置背景
 	char st[80];//准备设置的字符串
-	sprintf(st, "mode con cols=%d lines=%d", length * 7, height * 2 + 6);//向字符串输出文本
+	sprintf_s(st, "mode con cols=%d lines=%d", length * 7, height * 2 + 6);//向字符串输出文本
 	system(st);//设置控制台的长和宽
 	SetConsoleMode(window, ENABLE_EXTENDED_FLAGS | ENABLE_WINDOW_INPUT |
 	               ENABLE_MOUSE_INPUT);
@@ -320,7 +329,7 @@ void mouse(int a,int & leicnt,scoreboard_info & info)//有关鼠标的操作
 			gameover(info,iswin);
 			return;
 		}
-		get = click_gezi(a, MK_LEFT);//点击的格子
+		get = click_gezi(input,a, MK_LEFT);//点击的格子
 		if (get.X != -1//点到格子上
 				and !input[a].Event.MouseEvent.dwEventFlags//是按下按钮
 				)
@@ -351,7 +360,7 @@ void mouse(int a,int & leicnt,scoreboard_info & info)//有关鼠标的操作
 					doublekey(get,iswin,info);
 			}
 		}
-		else if(mouse_click(score.a,score.b,a,MK_LEFT))//点击了scoreboard按钮
+		else if(mouse_click(input,score.a,score.b,a,MK_LEFT))//点击了scoreboard按钮
 		{
 			TCHAR szpath[30]=TEXT("scoreboard.exe");
 			STARTUPINFO startinfo={sizeof(STARTUPINFO),NULL,NULL};
@@ -368,7 +377,7 @@ void mouse(int a,int & leicnt,scoreboard_info & info)//有关鼠标的操作
 				error(CANNOT_START_SCOREBOARD);//无法打开scoreboard程序
 			}
 		}
-		else if(mouse_click(reset_score.a,reset_score.b,a,MK_LEFT))//点击了reset score按钮
+		else if(mouse_click(input,reset_score.a,reset_score.b,a,MK_LEFT))//点击了reset score按钮
 		{
 			remove("gameinfo.json");//删除文件
 		}
@@ -433,7 +442,7 @@ int main()//主函数
 {
 	compare_version();//比较系统版本
 	window = GetStdHandle(STD_INPUT_HANDLE);//获取窗口句柄
-	SetConsoleTitle("扫雷");//设置窗口标题
+	SetConsoleTitle(TEXT("扫雷"));//设置窗口标题
 	initialize();//初始化
 	isrun = true;//在游戏界面
 	int leicnt = num;//初始化雷计数
